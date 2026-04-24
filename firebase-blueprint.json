@@ -1,0 +1,87 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Public profile information for users on the platform.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "bio": { "type": "string" },
+        "role": { "type": "string", "enum": ["donor", "recipient"] },
+        "location": { "type": "string" },
+        "avatarUrl": { "type": "string" },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "role", "joinedAt"]
+    },
+    "PrivateUser": {
+      "title": "PrivateUser",
+      "description": "Sensitive user information.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["email", "userId"]
+    },
+    "Story": {
+      "title": "Story",
+      "description": "A campaign or personal story seeking support.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "authorId": { "type": "string" },
+        "pixKey": { "type": "string" },
+        "targetAmount": { "type": "number" },
+        "raisedAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "completed", "reported"] },
+        "category": { "type": "string", "enum": ["health", "education", "food", "housing", "lgbt", "emergency", "others"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "images": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "content", "authorId", "pixKey", "createdAt", "updatedAt"]
+    },
+    "Donation": {
+      "title": "Donation",
+      "description": "A record of a donation made (or intent to donate via Pix).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "storyId": { "type": "string" },
+        "donorId": { "type": "string" },
+        "donorName": { "type": "string" },
+        "amount": { "type": "number" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "isPublic": { "type": "boolean" }
+      },
+      "required": ["storyId", "donorId", "amount", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Public user profiles."
+    },
+    "/users/{userId}/private/info": {
+      "schema": "PrivateUser",
+      "description": "Sensitive user information."
+    },
+    "/stories/{storyId}": {
+      "schema": "Story",
+      "description": "User stories and campaigns."
+    },
+    "/stories/{storyId}/donations/{donationId}": {
+      "schema": "Donation",
+      "description": "Donation records for a specific story."
+    },
+    "/donations": {
+      "schema": "Donation",
+      "description": "Root collection for all donations for easier global/donor querying."
+    }
+  }
+}
